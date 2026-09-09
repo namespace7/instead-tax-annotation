@@ -1,6 +1,9 @@
 /**
  * Convert a resolved value into the text that should
  * appear on the form
+ *
+ * The annotation type describes what the value means.
+ * The format object describes how that value should appear.
  */
 
 export function formatValue(value, format = {}) {
@@ -18,18 +21,23 @@ export function formatValue(value, format = {}) {
     case "date":
       return formatDate(value, format);
 
-    case "integer":
-      return formatInteger(value, format);
-
-    case "decimal":
-      return formatDecimal(value, format);
+    case "number":
+      return formatNumber(value, format);
 
     case "text":
-    default:
       return String(value);
+
+    default:
+      throw new Error(`Unsupported annotation type: ${format.type}`);
   }
 }
 
+/**
+ * Format a currency value.
+ *
+ * Example:
+ * 95000 -> "$95,000.00"
+ */
 function formatCurrency(value, format) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -39,6 +47,14 @@ function formatCurrency(value, format) {
   }).format(value);
 }
 
+/**
+ * Format a percentage value.
+ *
+ * The input is expected to be a decimal fraction.
+ *
+ * Example:
+ * 0.25 -> "25%"
+ */
 function formatPercentage(value, format) {
   return new Intl.NumberFormat("en-US", {
     style: "percent",
@@ -47,21 +63,29 @@ function formatPercentage(value, format) {
   }).format(value);
 }
 
-function formatInteger(value) {
+/**
+ * Format a generic number.
+ *
+ * Example:
+ * 1234567.5 -> "1,234,567.50"
+ */
+function formatNumber(value, format) {
   return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function formatDecimal(value, format) {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: format.decimals ?? 2,
+    useGrouping: format.useGrouping ?? true,
+    minimumFractionDigits: format.decimals ?? 0,
     maximumFractionDigits: format.decimals ?? 2,
   }).format(value);
 }
 
+/**
+ * Format a date using the requested locale.
+ */
 function formatDate(value, format) {
   const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`Invalid date value: ${value}`);
+  }
 
   return new Intl.DateTimeFormat(format.locale ?? "en-US").format(date);
 }

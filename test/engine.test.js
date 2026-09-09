@@ -10,7 +10,7 @@ describe("processAnnotations", () => {
   test("resolves and formats annotation values", () => {
     const result = processAnnotations(taxData, specification);
 
-    expect(result).toHaveLength(4);
+    expect(result).toHaveLength(7);
 
     const firstName = result.find((item) => item.id === "taxpayer.firstName");
 
