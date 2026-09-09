@@ -10,9 +10,11 @@ describe("processAnnotations", () => {
   test("resolves and formats annotation values", () => {
     const result = processAnnotations(taxData, specification);
 
-    expect(result).toHaveLength(3);
+    expect(result).toHaveLength(4);
 
-    expect(result[0]).toMatchObject({
+    const firstName = result.find((item) => item.id === "taxpayer.firstName");
+
+    expect(firstName).toMatchObject({
       id: "taxpayer.firstName",
       type: "text",
       value: "Yashwant",
@@ -22,7 +24,9 @@ describe("processAnnotations", () => {
   test("preserves rendering information", () => {
     const result = processAnnotations(taxData, specification);
 
-    expect(result[0].target).toEqual({
+    const firstName = result.find((item) => item.id === "taxpayer.firstName");
+
+    expect(firstName.target).toEqual({
       page: 1,
       box: {
         x: 100,
@@ -43,5 +47,33 @@ describe("processAnnotations", () => {
     };
 
     expect(() => processAnnotations(taxData, invalidSpecification)).toThrow();
+  });
+
+  test("renders an annotation when its condition is satisfied", () => {
+    const result = processAnnotations(taxData, specification);
+
+    const checkbox = result.find((item) => item.id === "filing.single");
+
+    expect(checkbox).toMatchObject({
+      id: "filing.single",
+      type: "checkbox",
+      value: "single",
+    });
+  });
+
+  test("does not render an annotation when its condition is not satisfied", () => {
+    const data = {
+      ...taxData,
+      taxpayer: {
+        ...taxData.taxpayer,
+        filingStatus: "married",
+      },
+    };
+
+    const result = processAnnotations(data, specification);
+
+    const checkbox = result.find((item) => item.id === "filing.single");
+
+    expect(checkbox).toBeUndefined();
   });
 });

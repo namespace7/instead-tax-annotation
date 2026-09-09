@@ -93,6 +93,27 @@
         "currency": "USD",
         "decimals": 2
       }
+    },
+
+    {
+      "id": "filing.single",
+      "type": "checkbox",
+      "source": {
+        "path": "$.taxpayer.filingStatus"
+      },
+      "target": {
+        "page": 1,
+        "box": {
+          "x": 100,
+          "y": 200,
+          "width": 15,
+          "height": 15
+        }
+      },
+      "condition": {
+        "operator": "equals",
+        "value": "single"
+      }
     }
   ]
 }

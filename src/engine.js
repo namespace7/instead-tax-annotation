@@ -1,6 +1,7 @@
 import { resolvePath } from "./resolver";
 import { formatValue } from "./formatter";
 import { validateSpecification } from "./validator";
+import { evaluateCondition } from "./condition.js";
 
 /**
  * Convert a declarative annotation specification
@@ -16,23 +17,32 @@ export function processAnnotations(data, specification) {
     throw new Error(formatValidationErrors(validation.errors));
   }
 
-  return specification.annotations.map((annotation) => {
-    const rawValue = resolvePath(data, annotation.source.path);
+  return specification.annotations
+    .map((annotation) => {
+      const rawValue = resolvePath(data, annotation.source.path);
 
-    const value = formatValue(rawValue, {
-      type: annotation.type,
-      ...annotation.format,
-    });
+      const shouldRender = evaluateCondition(rawValue, annotation.condition);
 
-    return {
-      id: annotation.id,
-      type: annotation.type,
-      value,
-      target: annotation.target,
-      format: annotation.format,
-      behavior: annotation.behavior,
-    };
-  });
+      if (!shouldRender) {
+        return null;
+      }
+
+      const value = formatValue(rawValue, {
+        type: annotation.type,
+        ...annotation.format,
+      });
+
+      return {
+        id: annotation.id,
+        type: annotation.type,
+        value,
+        target: annotation.target,
+        format: annotation.format,
+        behavior: annotation.behavior,
+        condition: annotation.condition,
+      };
+    })
+    .filter(Boolean);
 }
 
 function formatValidationErrors(errors) {
