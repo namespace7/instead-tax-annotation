@@ -57,8 +57,10 @@ describe("processAnnotations", () => {
     expect(checkbox).toMatchObject({
       id: "filing.single",
       type: "checkbox",
-      value: "single",
+      checked: true,
     });
+
+    expect(checkbox).not.toHaveProperty("value");
   });
 
   test("does not render an annotation when its condition is not satisfied", () => {

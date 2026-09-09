@@ -7,8 +7,15 @@ import { evaluateCondition } from "./condition.js";
  * Convert a declarative annotation specification
  * into renderer-independent instructions.
  *
+ * The engine:
+ * 1. validates the specification
+ * 2. resolves source values
+ * 3. evauates conditions
+ * 4. format values
+ * 5. produces renderer-ready instructions
+ *
  * The engine deliberately does not know anything
- * about PDF libraries
+ * about PDF libraries.
  */
 export function processAnnotations(data, specification) {
   const validation = validateSpecification(specification);
@@ -25,6 +32,18 @@ export function processAnnotations(data, specification) {
 
       if (!shouldRender) {
         return null;
+      }
+
+      if (annotation.type === "checkbox") {
+        return {
+          id: annotation.id,
+          type: annotation.type,
+          checked: true,
+          target: annotation.target,
+          format: annotation.format,
+          behavior: annotation.behavior,
+          condition: annotation.condition,
+        };
       }
 
       const value = formatValue(rawValue, {
