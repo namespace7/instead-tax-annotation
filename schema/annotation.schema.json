@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://instead-tax-annotation/schema/annotation.schema.json",
+
+  "title": "Tax Form Annotation Specification",
+  "description": "A declarative specification for mapping structured data onto fields on a tax form.",
+
+  "type": "object",
+
+  "required": ["schemaVersion", "form", "annotations"],
+
+  "properties": {
+    "schemaVersion": {
+      "type": "string"
+    },
+
+    "form": {
+      "$ref": "#/$defs/form"
+    },
+
+    "annotations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/annotation"
+      }
+    }
+  },
+
+  "additionalProperties": false,
+
+  "$defs": {
+    "form": {
+      "type": "object",
+
+      "required": ["id", "taxYear", "units", "coordinateSystem"],
+
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "taxYear": {
+          "type": "integer",
+          "minimum": 1900
+        },
+
+        "units": {
+          "type": "string",
+          "enum": ["pt", "mm", "in"]
+        },
+
+        "coordinateSystem": {
+          "type": "string",
+          "enum": ["top-left", "bottom-left"]
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "annotation": {
+      "type": "object",
+
+      "required": ["id", "type", "source", "target"],
+
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "number",
+            "currency",
+            "date",
+            "percentage",
+            "checkbox"
+          ]
+        },
+
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+
+        "target": {
+          "$ref": "#/$defs/target"
+        },
+
+        "format": {
+          "$ref": "#/$defs/format"
+        },
+
+        "behavior": {
+          "$ref": "#/$defs/behavior"
+        },
+
+        "condition": {
+          "$ref": "#/$defs/condition"
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "source": {
+      "type": "object",
+
+      "required": ["path"],
+
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^\\$\\."
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "target": {
+      "type": "object",
+
+      "required": ["page", "box"],
+
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+
+        "box": {
+          "$ref": "#/$defs/box"
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "box": {
+      "type": "object",
+
+      "required": ["x", "y", "width", "height"],
+
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0
+        },
+
+        "y": {
+          "type": "number",
+          "minimum": 0
+        },
+
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "format": {
+      "type": "object",
+
+      "properties": {
+        "fontFamily": {
+          "type": "string"
+        },
+
+        "fontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+
+        "alignment": {
+          "type": "string",
+          "enum": ["left", "center", "right"]
+        },
+
+        "verticalAlignment": {
+          "type": "string",
+          "enum": ["top", "middle", "bottom"]
+        },
+
+        "currency": {
+          "type": "string"
+        },
+
+        "decimals": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "behavior": {
+      "type": "object",
+
+      "properties": {
+        "missingValue": {
+          "type": "string",
+          "enum": ["skip", "empty", "error"]
+        },
+
+        "overflow": {
+          "type": "string",
+          "enum": ["shrink", "truncate", "wrap", "clip", "error"]
+        },
+
+        "minFontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      },
+
+      "additionalProperties": false
+    },
+
+    "condition": {
+      "type": "object",
+
+      "required": ["operator", "value"],
+
+      "properties": {
+        "operator": {
+          "type": "string",
+          "enum": ["equals", "notEquals"]
+        },
+
+        "value": {}
+      },
+
+      "additionalProperties": false
+    }
+  }
+}

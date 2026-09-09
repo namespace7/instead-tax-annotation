@@ -1,0 +1,51 @@
+{
+  "taxpayer": {
+    "name": {
+      "first": "Yashwant",
+      "middle": "Kumar",
+      "last": "Singh"
+    },
+
+    "address": {
+      "street": "123 Main street",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "zip": "560047"
+    },
+
+    "filingStatus": "single",
+
+    "employers": [
+      {
+        "name": "xoxoday",
+        "ein": "12-3456789",
+        "address": {
+          "city": "Bangalore",
+          "state": "Karnataka"
+        }
+      }
+    ],
+
+    "dependents": [
+      {
+        "name": {
+          "first": "Alice",
+          "last": "Singh"
+        },
+        "relationship": "Child"
+      },
+      {
+        "name": {
+          "first": "Bob",
+          "last": "Singh"
+        },
+        "relationship": "Child"
+      }
+    ]
+  },
+
+  "income": {
+    "wages": 95000,
+    "interest": 1250.5
+  }
+}
