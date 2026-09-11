@@ -6,7 +6,7 @@ A declarative annotation specification and reference implementation for mapping 
 
 tax form contains fixed boxes where values must be positioned precisely.
 
-The goal of this project is to define a renderer-indepentent specifiction that answers:
+The goal of this project is to define a renderer-independent specification that answers:
 
 - what values should be rendered?
 - where should it be rendered?
@@ -118,15 +118,15 @@ The generated PDFs are available under:
 
 ## Documentation
 
-- [Annotation Specification] (docs/annotation-spec.md)
-- [Architecture](doc/architecture.md)
+- [Annotation Specification](docs/annotation-spec.md)
+- [Architecture](docs/architecture.md)
 
 
 ## Design Decisions
 
 **Renderer independence**
 
-The annotation format does not depend on a particular PDF library. The engine produces rendering instructions which can be comsumed by different renderers.
+The annotation format does not depend on a particular PDF library. The engine produces rendering instructions which can be consumed by different renderers.
 
 **Top-left coordinates**
 
@@ -142,7 +142,7 @@ Rather than implementing the entire JSONPath specification, the reference implem
 
 ## Extensibility
 
-The specification is designed so that future version can add capabilities without changing the code mapping model.
+The specification is designed so that future versions can add capabilities without changing the code mapping model.
 
 ## Future Enhancements
 
