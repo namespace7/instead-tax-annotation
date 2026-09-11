@@ -47,5 +47,10 @@
   "income": {
     "wages": 95000,
     "interest": 1250.5
-  }
+  },
+
+  "returnInfo": {
+  "filingDate": "2025-04-15",
+  "estimatedTaxRate": 0.24
+}
 }

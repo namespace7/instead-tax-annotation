@@ -19,6 +19,22 @@ describe("processAnnotations", () => {
       type: "text",
       value: "Yashwant",
     });
+
+    const filingDate = result.find((item) => item.id === "return.filingDate");
+
+    expect(filingDate).toMatchObject({
+      id: "return.filingDate",
+      type: "date",
+      value: "4/15/2025",
+    });
+
+    const taxRate = result.find((item) => item.id === "return.taxRate");
+
+    expect(taxRate).toMatchObject({
+      id: "return.taxRate",
+      type: "percentage",
+      value: "24.0%",
+    });
   });
 
   test("preserves rendering information", () => {
@@ -77,5 +93,99 @@ describe("processAnnotations", () => {
     const checkbox = result.find((item) => item.id === "filing.single");
 
     expect(checkbox).toBeUndefined();
+  });
+
+  test("skips an annotation when its value is missing", () => {
+    const specificationWithMissingValue = {
+      ...specification,
+      annotations: [
+        {
+          id: "taxpayer.middleName",
+          type: "text",
+          source: {
+            path: "$.taxpayer.name.middleName",
+          },
+          target: {
+            page: 1,
+            box: {
+              x: 100,
+              y: 100,
+              width: 100,
+              height: 20,
+            },
+          },
+          behavior: {
+            missingValue: "skip",
+          },
+        },
+      ],
+    };
+
+    const result = processAnnotations(taxData, specificationWithMissingValue);
+
+    expect(result).toHaveLength(0);
+  });
+
+  test("renders an empty value when missingValue is empty", () => {
+    const specificationWithMissingValue = {
+      ...specification,
+      annotations: [
+        {
+          id: "taxpayer.middleName",
+          type: "text",
+          source: {
+            path: "$.taxpayer.name.middleName",
+          },
+          target: {
+            page: 1,
+            box: {
+              x: 100,
+              y: 100,
+              width: 100,
+              height: 20,
+            },
+          },
+          behavior: {
+            missingValue: "empty",
+          },
+        },
+      ],
+    };
+
+    const result = processAnnotations(taxData, specificationWithMissingValue);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].value).toBe("");
+  });
+
+  test("throws when a required value is missing", () => {
+    const specificationWithMissingValue = {
+      ...specification,
+      annotations: [
+        {
+          id: "taxpayer.middleName",
+          type: "text",
+          source: {
+            path: "$.taxpayer.name.middleName",
+          },
+          target: {
+            page: 1,
+            box: {
+              x: 100,
+              y: 100,
+              width: 100,
+              height: 20,
+            },
+          },
+          behavior: {
+            missingValue: "error",
+          },
+        },
+      ],
+    };
+
+    expect(() =>
+      processAnnotations(taxData, specificationWithMissingValue),
+    ).toThrow("Missing value for annotation: taxpayer.middleName");
   });
 });

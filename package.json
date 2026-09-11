@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "demo:form": "node scripts/create-demo-form.js",
+    "demo:fill": "node scripts/fill-demo-form.js"
   },
   "keywords": [
     "tax",
@@ -21,6 +23,7 @@
     "vitest": "^5.0.0"
   },
   "dependencies": {
-    "ajv": "^8.20.0"
+    "ajv": "^8.20.0",
+    "pdf-lib": "^1.17.1"
   }
 }

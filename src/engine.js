@@ -1,6 +1,6 @@
-import { resolvePath } from "./resolver";
-import { formatValue } from "./formatter";
-import { validateSpecification } from "./validator";
+import { resolvePath } from "./resolver.js";
+import { formatValue } from "./formatter.js";
+import { validateSpecification } from "./validator.js";
 import { evaluateCondition } from "./condition.js";
 
 /**
@@ -27,6 +27,20 @@ export function processAnnotations(data, specification) {
   return specification.annotations
     .map((annotation) => {
       const rawValue = resolvePath(data, annotation.source.path);
+
+      const isMissing = rawValue === undefined || rawValue === null;
+
+      if (isMissing) {
+        const behavior = annotation.behavior?.missingValue ?? "skip";
+
+        if (behavior === "skip") {
+          return null;
+        }
+
+        if (behavior === "error") {
+          throw new Error(`Missing value for annotation: ${annotation.id}`);
+        }
+      }
 
       const shouldRender = evaluateCondition(rawValue, annotation.condition);
 
